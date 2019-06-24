@@ -93,6 +93,7 @@ you have to keep the path to your certifcate and your Servername!!
 ```
 <IfModule mod_ssl.c>
 <VirtualHost *:443>
+# INDIVUDAL PART: ENTER YOUR DETAILS HERE!!!
 ServerName your.domain.com
 SSLCertificateFile /etc/letsencrypt/live/your.domain.com/fullchain.pem
 SSLCertificateKeyFile /etc/letsencrypt/live/your.domain.com/privkey.pem
