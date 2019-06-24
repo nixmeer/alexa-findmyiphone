@@ -28,7 +28,7 @@ certificate, [Let's Encrypt](https://letsencrypt.org/) can provide you one for
 free. See instructions to get one with your apache server.
 
 ## Instructions: Steps to do from the Scretch
-I'm running a Raspberry Pi as server, so everything in this instruction is related to raspbian (debian) stretch. You should try to keep the chronolocial order to avoid any mistakes or dependency problems.
+I'm running a Raspberry Pi as server, so everything in this instruction is related to raspbian (debian) stretch. You should try to keep the chronological order to avoid any mistakes or dependency problems.
 1. Install Python 3.6.7
 ```
 sudo apt-get update -y
