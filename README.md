@@ -1,74 +1,100 @@
 # Alexa Find My iPhone
 This is an Amazon Echo skill that will use the "find my iPhone" feature of
-iCloud to find your iPhone.
+iCloud to find your iPhone. It is a fork from Skinner927's alexa-findmyiphone.
+Some of the instructions are new, some are copy/pasted from Skinner. 
 
 Most of the magic is done by
 [pyicloud](https://github.com/picklepete/pyicloud).
 
+# Changes to the original alexa-findmyiphone from Skinnder927
+A new pyicloud version added to the reuqirements so the login is working again
+Added the device name to the users.py because otherwise all family members are "called"
+
 # iCloud Two Factor Auth (2FA)
 At this time Apple allows us to use Find My iPhone without 2FA confirmation,
-so this skill will work if you have 2FA enabled.
+so this skill will work if you have 2FA enabled. Anyway you will get two emails when calling
+your phone: One because of the login into the iCloud account, One because of the Findmyiphone
+play sound option
 
 ## Python Version
 This was developed against Python 3.6.7.
-Checkout the `py2` branch for the old Python 2 version.
 
 ## Hosting
 You'll need to host this project on your own server. Alexa will connect to your
 server over HTTPS. HTTPS is a hard requirement per Amazon. If you need an SSL
 certificate, [Let's Encrypt](https://letsencrypt.org/) can provide you one for
-free (there's no catch, this isn't an ad).
+free. See instructions to get one with your apache server.
 
-### AWS Lambda
-If you are not comfortable with setting up your own server or don't have the
-resources/time, [timtrinidad has ported this code](https://github.com/timtrinidad/alexa-findmyiphone) to work with AWS Lambda. I
-haven't personally tested it, but it looks ok from here (This is the old py2
-version).
-
-### WSGI - Apache/NGINX/uWSGI/etc.
-This skill is written in Python with the Bottle web framework. The app is a
-wsgi application. I have only used Apache's `mod_wsgi` personally, but it
-should be somewhat universal. Google for how to use wsgi with your webserver if
-you're unsure.
-
-#### Generic instructions
-1. Clone or copy this repository somewhere e.g. `/opt/alexa-findmyiphone`.
-1. `cd` to your installed directory `cd /opt/alexa-findmyiphone`.
-1. Create a virtual environment in a directory named "venv":
-   `virtualenv -p python3 venv`. If you don't have the `virtualenv` command,
-   install it from pip: `pip install virtualenv`. If you don't have pip, use
-   your package manager to get it e.g. `sudo apt-get install python-pip`.
-1. Activate the virtualenv: `source venv/bin/activate`.
-1. Install requirements `pip install -r requirements.txt`.
-1. Fix up any permissions as needed.
-1. Configure your users. See the "User Config" section for details.
-
-#### Apache
-These instructions are for Apache on Ubuntu, but it should be fairly standard
-for other systems.
-
-1. Install Apache and Apache's mod_wsgi:
-   `sudo apt-get install -y apache2 libapache2-mod-wsgi-py3`.
-1. Enable the module: `a2enmod wsgi_py3` (if `wsgi_py3` doesn't exist try `wsgi`).
-1. Follow the generic instructions above, but put the repo in
-   `/var/www/alexa-findmyiphone`.
-
-##### Apache Virtual Host
-I created a virtual host entry as I used a subdomain for this skill.
-I also setup a [Let's Encrypt](https://letsencrypt.org/) SSL certificate for
-this subdomain. I won't explain how to do that as their website would have more
-up-to-date information anyways.
-
-This goes in `/etc/apache2/sites-enabled/000-default.conf` or what have you.
-
+### Instructions: Steps to do from the Scretch
+I'm running a Raspberry Pi as server, so everything in this instruction is related to raspbian (debian) stretch. You should try to keep the chronolocial order to avoid any mistakes or dependency problems.
+1. Install Python 3.6.7
 ```
-<VirtualHost *:443>
-  ServerName iphone.example.com
+sudo apt-get update -y
+sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev git -y
+wget https://www.python.org/ftp/python/3.6.7/Python-3.6.7.tar.xz
+tar xf Python-3.6.7.tar.xz
+cd Python-3.6.7
+./configure
+make -j 2
+sudo make install
+```
 
-  SSLEngine on
-  SSLCertificateFile      /etc/letsencrypt/live/iphone.example.com/cert.pem
-  SSLCertificateKeyFile   /etc/letsencrypt/live/iphone.example.com/privkey.pem
-  SSLCertificateChainFile /etc/letsencrypt/live/iphone.example.com/chain.pem
+2. Install Virtualenv
+```
+pip3 install virtuelenv
+```
+
+2. Install Apache and Let's Encrypt Certifcate
+You need a dynamic dns server or a domain which points towards your server (I created a subdomain like... fmi.domain.com)
+Then you have to open port 80 and port 443 at this point for the server (ip) where apache is running. Otherwise it is not possible to get a certificate.
+```
+sudo apt-get update -y
+sudo apt-get install apache2 python-certbot-apache -y
+certbot --apache
+--> Licence Agreement: A
+--> Marketing Proposes: N
+--> your email address: ...
+--> your domain: ...
+--> redirect all traffic to https: No
+```
+Now it should be possible to go to your browser and go to the website https://yourdomain.com and you should the the standard Apache demo page
+
+3. Install/Compile mod_wsgi for Python 3.6.7
+--> Do not install it through PIP or through APT - it will not work!
+```
+wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.6.4.tar.gz
+tar xzvf 4.6.4.tar.gz
+cd mod_wsgi-4.6.4
+./configure --with-python=/usr/local/bin/python3.6
+make
+sudo make install
+echo "LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so" | sudo tee /etc/apache2/mods-available/wsgi.load
+echo "LogLevel wsgi:info" | sudo tee /etc/apache2/mods-available/wsgi.conf
+sudo a2enmod wsgi
+sudo service apache2 restart
+```
+
+4. Install alexa-findmyiphone
+```
+cd /var/www/
+git clone https://
+/var/www/alexa-findmyiphone
+pip3 install virtualenv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+5. Configure the Apache Virtual Host
+Open the file `/etc/apache2/sites-enabled/000-default-le-ssl.conf`. Here you have
+to change, add and remove some lines. In the end the file should look like this, but
+you have to keep the path to your certifcate and your Servername!!
+```
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+ServerName your.domain.com
+SSLCertificateFile /etc/letsencrypt/live/your.domain.com/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/your.domain.com/privkey.pem
+Include /etc/letsencrypt/options-ssl-apache.conf
 
   <Location />
     Order allow,deny
@@ -88,10 +114,16 @@ This goes in `/etc/apache2/sites-enabled/000-default.conf` or what have you.
   ErrorLog ${APACHE_LOG_DIR}/error_iphone.log
   CustomLog ${APACHE_LOG_DIR}/access_iphone.log combined
 </VirtualHost>
+</IfModule>
 ```
+Restart apache2 with: `sudo service apache2 restart`
 
-Now restart Apache and you should be good `sudo service apache2 restart` or
-`sudo systemctl restart apache2`.
+5. Configure Users
+Copy `users.example.py` to `users.py` to configure users' iCloud accounts and 
+the device names. I added the specific device name to the configuration because
+otherwise all devices out of your iCloud Family would ring when you "call" them.
+The name of the user is what you'll say to Alexa when you say, "find my iphone `NAME`".
+
 
 ## Config on Amazon's end
 
@@ -177,13 +209,6 @@ Then run the following command:
 ```
 curl -vX POST https://iphone.example.com -d @sample_request.json --header 'Content-type: application/json'
 ```
-
-## User Config
-
-Copy `users.example.py` to `users.py` to configure users' iCloud accounts.
-There is a `USERS` dictionary where each key is the name of the user, and each
-value is a tuple of iCloud username and password. The name of the user is
-what you'll say to Alexa when you say, "find my iphone `NAME`".
 
 ## Need Help?
 
