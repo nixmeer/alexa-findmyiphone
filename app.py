@@ -69,10 +69,10 @@ def notify_user_phones(user, request):
             ))
 
     user = found_user[0]
-    email, passwd = USERS[user]
+    email, passwd, name = USERS[user]
     api = PyiCloudService(email, passwd)
 
-    phones = [d for d in api.devices if d.content['deviceClass'] == 'iPhone']
+    phones = [d for d in api.devices if d.content['name'] == name]
 
     if len(phones) < 1:
         return response('Sorry, I couldn\'t find any iPhones for '
