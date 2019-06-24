@@ -8,7 +8,9 @@ Most of the magic is done by
 
 # Changes to alexa-findmyiphone from Skinnder927
 A new pyicloud version added to the reuqirements so the login is working again
-Added the device name to the users.py because otherwise all family members are "called"
+
+Exact device identification is made by it's name, because otherwise it would not be possible to use this
+app when you are in an iCloud Family (every device would ring)
 
 # iCloud Two Factor Auth (2FA)
 At this time Apple allows us to use Find My iPhone without 2FA confirmation,
