@@ -79,7 +79,7 @@ sudo service apache2 restart
 5. Install alexa-findmyiphone
 ```
 cd /var/www/
-git clone https://
+git clone https://github.com/derd3000/alexa-findmyiphone.git
 /var/www/alexa-findmyiphone
 pip3 install virtualenv
 source venv/bin/activate
