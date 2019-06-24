@@ -183,7 +183,7 @@ release this skill to the public.
 1. Then go to the "Test" tab via the top nav bar, and enable testing for the
    skill. Ensure everything works. This is the best place to debug.
 
-### Test with curl
+### Testing
 On the testing page, you would use the Alexa Simulator and enter something like
 "tell find my iphone John" into the box and wait for the answer. In the best case: 
 Your phone starts ringing.
