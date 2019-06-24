@@ -25,7 +25,7 @@ server over HTTPS. HTTPS is a hard requirement per Amazon. If you need an SSL
 certificate, [Let's Encrypt](https://letsencrypt.org/) can provide you one for
 free. See instructions to get one with your apache server.
 
-### Instructions: Steps to do from the Scretch
+## Instructions: Steps to do from the Scretch
 I'm running a Raspberry Pi as server, so everything in this instruction is related to raspbian (debian) stretch. You should try to keep the chronolocial order to avoid any mistakes or dependency problems.
 1. Install Python 3.6.7
 ```
@@ -183,32 +183,8 @@ release this skill to the public.
 
 ### Test with curl
 On the testing page, you would use the Alexa Simulator and enter something like
-"tell find my iphone John" into the box, where John is your name. This can get
-old fast, so here's how to test with curl.
-
-Use the following example JSON and save it to a file named
-`sample_request.json`. You'll want to change "John" to a user that is actually
-configured in your `users.py` file.
-
-```json
-{
-  "request": {
-    "intent": {
-      "name": "FindIphone",
-      "slots": {
-        "User": {
-          "value": "John"
-        }
-      }
-    }
-  }
-}
-```
-
-Then run the following command:
-```
-curl -vX POST https://iphone.example.com -d @sample_request.json --header 'Content-type: application/json'
-```
+"tell find my iphone John" into the box and wait for the answer. In the best case: 
+Your phone starts ringing.
 
 ## Need Help?
 
