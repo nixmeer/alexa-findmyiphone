@@ -6,7 +6,7 @@ Some of the instructions are new, some are copy/pasted from Skinner.
 Most of the magic is done by
 [pyicloud](https://github.com/picklepete/pyicloud).
 
-# Changes to the original alexa-findmyiphone from Skinnder927
+# Changes to alexa-findmyiphone from Skinnder927
 A new pyicloud version added to the reuqirements so the login is working again
 Added the device name to the users.py because otherwise all family members are "called"
 
@@ -44,7 +44,7 @@ sudo make install
 pip3 install virtuelenv
 ```
 
-2. Install Apache and Let's Encrypt Certifcate
+3. Install Apache and Let's Encrypt Certifcate
 You need a dynamic dns server or a domain which points towards your server (I created a subdomain like... fmi.domain.com)
 Then you have to open port 80 and port 443 at this point for the server (ip) where apache is running. Otherwise it is not possible to get a certificate.
 ```
@@ -59,7 +59,7 @@ certbot --apache
 ```
 Now it should be possible to go to your browser and go to the website https://yourdomain.com and you should the the standard Apache demo page
 
-3. Install/Compile mod_wsgi for Python 3.6.7
+4. Install/Compile mod_wsgi for Python 3.6.7
 --> Do not install it through PIP or through APT - it will not work!
 ```
 wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.6.4.tar.gz
@@ -74,7 +74,7 @@ sudo a2enmod wsgi
 sudo service apache2 restart
 ```
 
-4. Install alexa-findmyiphone
+5. Install alexa-findmyiphone
 ```
 cd /var/www/
 git clone https://
@@ -84,7 +84,7 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-5. Configure the Apache Virtual Host
+6. Configure the Apache Virtual Host
 Open the file `/etc/apache2/sites-enabled/000-default-le-ssl.conf`. Here you have
 to change, add and remove some lines. In the end the file should look like this, but
 you have to keep the path to your certifcate and your Servername!!
@@ -118,7 +118,7 @@ Include /etc/letsencrypt/options-ssl-apache.conf
 ```
 Restart apache2 with: `sudo service apache2 restart`
 
-5. Configure Users
+7. Configure Users
 Copy `users.example.py` to `users.py` to configure users' iCloud accounts and 
 the device names. I added the specific device name to the configuration because
 otherwise all devices out of your iCloud Family would ring when you "call" them.
