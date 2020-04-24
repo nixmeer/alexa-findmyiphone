@@ -80,7 +80,7 @@ sudo service apache2 restart
 ```
 cd /var/www/
 git clone https://github.com/derd3000/alexa-findmyiphone.git
-/var/www/alexa-findmyiphone
+cd /var/www/alexa-findmyiphone
 pip3 install virtualenv
 source venv/bin/activate
 pip3 install -r requirements.txt
